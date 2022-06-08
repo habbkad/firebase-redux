@@ -1,23 +1,46 @@
-import logo from './logo.svg';
-import './App.css';
+import logo from "./logo.svg";
+import "./App.css";
+import React, { useState } from "react";
+import { collection, addDoc } from "firebase/firestore";
+import app from "./Firebase/Config";
+import { getFirestore } from "firebase/firestore";
 
 function App() {
+  const [name, setName] = useState("");
+  const [gen, setGen] = useState("");
+  const db = getFirestore(app);
+  const handlePushToFirebase = async (e) => {
+    e.preventDefault();
+    let person = {
+      name,
+      gen,
+    };
+    try {
+      const docRef = await addDoc(collection(db, "users"), person);
+      console.log("Document written with ID: ", docRef.id);
+    } catch (e) {
+      console.error("Error adding document: ", e);
+    }
+  };
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <input
+        placeholder="Name"
+        value={name}
+        onChange={(e) => {
+          setName(e.target.value);
+        }}
+      />
+      <input
+        placeholder="Gen"
+        value={gen}
+        onChange={(e) => {
+          setGen(e.target.value);
+        }}
+      />
+      <br />
+      <button onClick={handlePushToFirebase}>submit</button>
     </div>
   );
 }
