@@ -1,46 +1,29 @@
 import logo from "./logo.svg";
 import "./App.css";
-import React, { useState } from "react";
-import { collection, addDoc } from "firebase/firestore";
+import React, { useState, useEffect } from "react";
+import {
+  collection,
+  addDoc,
+  doc,
+  setDoc,
+  query,
+  where,
+  getDocs,
+  onSnapshot,
+} from "firebase/firestore";
+import { useDispatch, useSelector } from "react-redux";
+import { addStudent } from "./Redux/Actions";
 import app from "./Firebase/Config";
 import { getFirestore } from "firebase/firestore";
+import { v4 as uuid } from "uuid";
+import DeleteStudent from "./DeleteStudent";
+import "bootstrap/dist/css/bootstrap.min.css";
+import Router from "./Navigation/Router";
 
 function App() {
-  const [name, setName] = useState("");
-  const [gen, setGen] = useState("");
-  const db = getFirestore(app);
-  const handlePushToFirebase = async (e) => {
-    e.preventDefault();
-    let person = {
-      name,
-      gen,
-    };
-    try {
-      const docRef = await addDoc(collection(db, "users"), person);
-      console.log("Document written with ID: ", docRef.id);
-    } catch (e) {
-      console.error("Error adding document: ", e);
-    }
-  };
-
   return (
     <div className="App">
-      <input
-        placeholder="Name"
-        value={name}
-        onChange={(e) => {
-          setName(e.target.value);
-        }}
-      />
-      <input
-        placeholder="Gen"
-        value={gen}
-        onChange={(e) => {
-          setGen(e.target.value);
-        }}
-      />
-      <br />
-      <button onClick={handlePushToFirebase}>submit</button>
+      <Router />
     </div>
   );
 }
